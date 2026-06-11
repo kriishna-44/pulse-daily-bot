@@ -5,6 +5,8 @@
 import os
 from datetime import datetime
 import requests
+import smtplib
+from email.mime.text import MIMEText
 
 
 def get_weather(city="Thiruvananthapuram"):
@@ -55,6 +57,31 @@ TODAY'S QUOTE
     return summary
 
 
+def send_email(summary_text):
+    """Securely log into Gmail and dispatch the summary report."""
+    sender = os.environ.get("EMAIL_SENDER")
+    password = os.environ.get("EMAIL_PASSWORD")
+    receiver = os.environ.get("EMAIL_RECEIVER")
+    
+    if not all([sender, password, receiver]):
+        print("Error: Missing email configuration secrets.")
+        return
+
+    msg = MIMEText(summary_text)
+    msg["Subject"] = "Pulse - Daily Summary"
+    msg["From"] = sender
+    msg["To"] = receiver
+    
+    try:
+        # Connect securely to Gmail's server (Port 465 for SSL)
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender, password)
+            server.send_message(msg)
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+
 def run():
     """Main entry point. Called by GitHub Actions."""
     summary = build_summary()
@@ -63,6 +90,9 @@ def run():
     # Save to a file (uploaded as a downloadable artifact)
     with open("daily_summary.txt", "w", encoding="utf-8") as f:
         f.write(summary)
+
+    # NEW: Send the summary to your email inbox!
+    send_email(summary)
 
     print("Pulse ran successfully.")
 
