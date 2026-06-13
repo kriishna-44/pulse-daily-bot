@@ -10,7 +10,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-def check_weather_alerts(city="Thiruvananthapuram"):
+def check_weather_alerts(city="Kochi"):
     """
     Fetch weather from OpenWeatherMap and check threshold parameters.
     Returns: (alert_triggered, weather_report_string, list_of_reasons)
