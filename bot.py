@@ -10,7 +10,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-def check_weather_alerts(city="Kochi"):
+def check_weather_alerts(city="Hyderabad"):
     """
     Fetch weather from OpenWeatherMap and check threshold parameters.
     Returns: (alert_triggered, weather_report_string, list_of_reasons)
@@ -122,7 +122,7 @@ def send_email(summary_text):
 
 def run():
     """Main entry point. Called by GitHub Actions."""
-    target_city = "Thiruvananthapuram"
+    target_city = "Hyderabad"
     print(f"Initiating Pulse environment analysis for {target_city}...")
     
     alert_triggered, weather_report, reasons = check_weather_alerts(target_city)
